@@ -1,5 +1,21 @@
 {
     "_comment": "This file defines response types based on the type of issue detected in triggers.json. Adjust the response text to match specific triggers.",
-    "bug_reply": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
-    "dupe_reply": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ..."
+    "bug_reply": {
+        "default": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
+        "item duplication": "Item duplication is often caused by a glitch. Try reloading the game or checking for updates.",
+        "redstone bug": "Redstone bugs can be tricky! Make sure to check for updates or try a different setup.",
+        "mob glitch": "Mob glitches often happen due to loading issues. Restarting your game usually helps!",
+        "inventory bug": "Inventory bugs can occur when your game is lagging. Try clearing some items or restarting.",
+        "chunk loading issue": "Chunk loading issues can be fixed by reloading the chunks. You can do this by moving away and returning.",
+        "spawn bug": "Spawn bugs are common in Minecraft. Make sure to check the area and any settings you have.",
+        "entity lag": "Entity lag can happen with too many entities nearby. Consider reducing their number to improve performance.",
+        "rendering glitch": "Rendering glitches are often caused by graphics settings. Try adjusting them in the options menu."
+    },
+    "dupe_reply": {
+        "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
+        "dupe": "You may be encountering a classic duplication glitch. Make sure your game is updated and restart if necessary.",
+        "duplication glitch": "Duplication glitches often occur due to specific actions. Please describe the steps you took to trigger this.",
+        "exploit": "Exploits can lead to item duplication. Make sure to report it to Mojang and try avoiding it in your gameplay.",
+        "glitch": "If you think you've found a glitch, try reproducing it and note the steps so you can report it."
+    }
 }
