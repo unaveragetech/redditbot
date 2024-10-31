@@ -53,7 +53,7 @@ jobs:
           CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
           USERNAME: ${{ secrets.REDDIT_USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
+          PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           USER_AGENT: 'your_bot_user_agent'
         run: |
           if [ "${{ github.event_name }}" == "issues" ]; then
