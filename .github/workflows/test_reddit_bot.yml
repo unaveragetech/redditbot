@@ -24,10 +24,10 @@ jobs:
 
       - name: Run Test Script
         env:
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
+          CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           USER_AGENT: ${{ secrets.USER_AGENT }}
           POST_URL: "${{ github.event.issue.title }}" # Set issue title as POST_URL
         run: |
