@@ -1,12 +1,14 @@
-# .github/workflows/hourly_reddit_scan.yml
-name: Reddit Bot Hourly Scan
+# .github/workflows/reddit_bot.yml
+name: Reddit Bot Automation
 
 on:
   schedule:
     - cron: '0 * * * *'  # Runs every hour
+  issues:
+    types: [opened]  # Triggered when an issue is opened
 
 jobs:
-  reddit-scan:
+  run-reddit-bot:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,4 +33,8 @@ jobs:
           PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           USER_AGENT: 'your_bot_user_agent'
         run: |
-          python reddit_bot.py
+          if [ "${{ github.event_name }}" == "issues" ]; then
+            python reddit_bot.py --manual "$(jq -r '.issue.body' < $GITHUB_EVENT_PATH)"
+          else
+            python reddit_bot.py
+          fi
