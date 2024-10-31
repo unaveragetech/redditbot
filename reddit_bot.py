@@ -55,14 +55,16 @@ def scan_and_respond(reddit, responses, triggers, subreddits):
 def reply_to_post(reddit, responses, triggers, post_url):
     submission = reddit.submission(url=post_url)
     
-    response_text = "Thanks for sharing!"  # Default response
+    response_text = responses["bug_reply"]["default"]  # Default response
     found_trigger = False
 
-    # Detect relevant keywords and select the appropriate response
     for keyword in triggers:
         if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
-            response_key = "dupe_reply" if "dupe" in keyword else "bug_reply"
-            response_text = responses.get(response_key, response_text)
+            # Use the specific response based on the keyword
+            if keyword in responses["bug_reply"]:
+                response_text = responses["bug_reply"][keyword]
+            elif keyword in responses["dupe_reply"]:
+                response_text = responses["dupe_reply"][keyword]
             found_trigger = True
             break
     
