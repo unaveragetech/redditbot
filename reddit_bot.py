@@ -1,4 +1,5 @@
 # reddit_bot.py
+import os
 import praw
 import json
 import argparse
@@ -13,10 +14,14 @@ def load_triggers():
     with open('triggers.json', 'r') as triggers_file:
         return json.load(triggers_file)["keywords"]
 
-# Authenticate Reddit client
+# Authenticate Reddit client using environment variables
 def authenticate():
     return praw.Reddit(
-        config="bot1"  # Load the configuration from the praw.ini file for bot1
+        client_id=os.getenv("REDDIT_CLIENT_ID"),
+        client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
+        username=os.getenv("REDDIT_USERNAME"),
+        password=os.getenv("PASSWORD"),
+        user_agent="python:com.reddit.minecraftbot:v1.0.0"
     )
 
 # Search for relevant posts and respond
