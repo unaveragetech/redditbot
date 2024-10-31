@@ -1,12 +1,12 @@
 {
     "_comment": "This file defines response types based on the type of issue detected in triggers.json. Adjust the response text to match specific triggers.",
     "bug_reply": {
-        "default": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
-        "item duplication": "Item duplication is often caused by a glitch. Try reloading the game or checking for updates.",
+        "default": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: Reset your client, switch to fabric, alocate more ram, reduce mode...",
+        "item duplication": "Item duplication is often caused by a glitch. Try reloading the game or checking for updates. in any plugins your using",
         "redstone bug": "Redstone bugs can be tricky! Make sure to check for updates or try a different setup.",
-        "mob glitch": "Mob glitches often happen due to loading issues. Restarting your game usually helps!",
+        "mob glitch": "Mob glitches often happen due to loading issues. Restarting your game usually helps! or allocating more ram try plugins that reduce mob rendering strain",
         "inventory bug": "Inventory bugs can occur when your game is lagging. Try clearing some items or restarting.",
-        "chunk loading issue": "Chunk loading issues can be fixed by reloading the chunks. You can do this by moving away and returning.",
+        "chunk loading issue": "Chunk loading issues can be fixed by reloading the chunks. You can do this by moving away and returning. try restarting your client",
         "spawn bug": "Spawn bugs are common in Minecraft. Make sure to check the area and any settings you have.",
         "entity lag": "Entity lag can happen with too many entities nearby. Consider reducing their number to improve performance.",
         "rendering glitch": "Rendering glitches are often caused by graphics settings. Try adjusting them in the options menu."
