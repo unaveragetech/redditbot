@@ -15,7 +15,8 @@ def create_reddit_instance():
         client_secret=client_secret,
         username=username,
         password=password,
-        user_agent=user_agent
+        USER_AGENT = "BotName/1.0 (by u/YourRedditUsername) - Searches for 'dupe' and 'glitch' on TextRpgGame"
+
     )
     return reddit
 
