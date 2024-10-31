@@ -1,0 +1,5 @@
+{
+    "_comment": "This file defines response types based on the type of issue detected in triggers.json. Adjust the response text to match specific triggers.",
+    "bug_reply": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
+    "dupe_reply": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ..."
+}
