@@ -1,6 +1,7 @@
 {
     "_comment": "This file contains keywords that trigger specific bot responses. Add keywords to expand the bot's detection of issues.",
     "keywords": [
+        "triggers",
         "dupe",
         "duplication glitch",
         "item duplication",
@@ -92,7 +93,6 @@
         "tnt duplication",
         "sticky piston bug",
         "chest inventory glitch",
-        "ender dragon bug",
-        "trigger"
+        "ender dragon bug"
     ]
 }
