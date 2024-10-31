@@ -1,4 +1,5 @@
 {
+    "_comment": "This file contains keywords that trigger specific bot responses. Add keywords to expand the bot's detection of issues.",
     "keywords": [
         "dupe",
         "duplication glitch",
