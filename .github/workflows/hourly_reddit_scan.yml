@@ -25,12 +25,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verify Environment Variables
+      - name: Extract URL or Query
+        id: extract_info
         run: |
-          echo "CLIENT_ID: $CLIENT_ID"
-          echo "CLIENT_SECRET: $CLIENT_SECRET"
-          echo "USERNAME: $USERNAME"
-          echo "USER_AGENT: $USER_AGENT"
+          issue_title="$(jq -r '.issue.title' < $GITHUB_EVENT_PATH)"
+          issue_body="$(jq -r '.issue.body' < $GITHUB_EVENT_PATH)"
+          
+          # Check if title or body contains a Reddit URL
+          url_regex="https:\/\/(www\.)?reddit\.com\/r\/[^ ]+"
+          if [[ $issue_title =~ $url_regex ]]; then
+            post_url="${BASH_REMATCH[0]}"
+            echo "URL found in title: $post_url"
+            echo "post_url=$post_url" >> $GITHUB_ENV
+          elif [[ $issue_body =~ $url_regex ]]; then
+            post_url="${BASH_REMATCH[0]}"
+            echo "URL found in body: $post_url"
+            echo "post_url=$post_url" >> $GITHUB_ENV
+          else
+            # No URL found; set the title as the query
+            query="$issue_title"
+            echo "No URL found; using title as query: $query"
+            echo "query=$query" >> $GITHUB_ENV
+          fi
 
       - name: Run Reddit Bot
         env:
@@ -41,7 +57,15 @@ jobs:
           USER_AGENT: 'your_bot_user_agent'
         run: |
           if [ "${{ github.event_name }}" == "issues" ]; then
-            python reddit_bot.py --manual "$(jq -r '.issue.body' < $GITHUB_EVENT_PATH)"
+            # Check if post_url is set in the environment
+            if [ -n "$post_url" ]; then
+              python reddit_bot.py --manual "$post_url"
+            elif [ -n "$query" ]; then
+              python reddit_bot.py --query "$query"
+            else
+              echo "Error: Neither a URL nor a query was found in the issue."
+              exit 1
+            fi
           else
             python reddit_bot.py
           fi
