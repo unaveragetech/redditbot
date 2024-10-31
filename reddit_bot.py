@@ -17,11 +17,11 @@ def load_triggers():
 # Authenticate Reddit client using environment variables
 def authenticate():
     return praw.Reddit(
-        client_id=os.getenv("REDDIT_CLIENT_ID"),
-        client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
-        username=os.getenv("REDDIT_USERNAME"),
+        client_id=os.getenv("CLIENT_ID"),
+        client_secret=os.getenv("CLIENT_SECRET"),
+        username=os.getenv("USERNAME"),
         password=os.getenv("PASSWORD"),
-        user_agent="python:com.reddit.minecraftbot:v1.0.0"
+        user_agent=os.getenv("USER_AGENT", "your_bot_user_agent")
     )
 
 # Search for relevant posts and respond
