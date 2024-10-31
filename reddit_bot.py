@@ -37,8 +37,13 @@ def scan_and_respond(reddit, responses, triggers, subreddits):
             # Detect relevant keywords in the title or body and select the appropriate response
             for keyword in triggers:
                 if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
-                    response_key = "dupe_reply" if "dupe" in keyword else "bug_reply"
-                    response_text = responses.get(response_key, response_text)
+                    # Determine the appropriate response key based on the keyword
+                    if keyword in responses["dupe_reply"]:
+                        response_key = "dupe_reply"
+                    else:
+                        response_key = "bug_reply"
+                    
+                    response_text = responses[response_key].get(keyword, responses[response_key]["default"])
                     found_trigger = True
                     break
             
