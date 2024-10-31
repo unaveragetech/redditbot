@@ -74,7 +74,7 @@ def main():
     responses = load_responses()
     triggers = load_triggers()
     reddit = authenticate()
-    subreddits = ["Minecraft", "technicalminecraft", "minecraftsuggestions"]
+    subreddits = ["TextRpgGame"]
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--manual", help="URL of specific Reddit post to reply to")
