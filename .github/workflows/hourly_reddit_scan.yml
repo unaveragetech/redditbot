@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: '0 * * * *'  # Runs every hour
   issues:
-    types: [opened]  # Triggered when an issue is opened
+    #types: [opened]  # Triggered when an issue is opened
 
 jobs:
   run-reddit-bot:
