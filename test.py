@@ -8,13 +8,13 @@ def main():
         print("Error: POST_URL environment variable is not set.")
         return
 
-    # Set up Reddit API credentials
+    # Set up Reddit API credentials with stripped whitespace
     reddit = praw.Reddit(
-        client_id=os.getenv("CLIENT_ID"),
-        client_secret=os.getenv("CLIENT_SECRET"),
-        username=os.getenv("USERNAME"),
-        password=os.getenv("PASSWORD"),
-        user_agent=os.getenv("USER_AGENT")
+        client_id=os.getenv("CLIENT_ID").strip(),
+        client_secret=os.getenv("CLIENT_SECRET").strip(),
+        username=os.getenv("USERNAME").strip(),
+        password=os.getenv("PASSWORD").strip(),
+        user_agent=os.getenv("USER_AGENT").strip()
     )
 
     try:
