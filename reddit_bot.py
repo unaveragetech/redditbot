@@ -3,6 +3,8 @@ import os
 import praw
 import json
 import argparse
+import subprocess
+from datetime import datetime
 
 # Load responses
 def load_responses():
@@ -24,6 +26,20 @@ def authenticate():
         user_agent=os.getenv("USER_AGENT", "your_bot_user_agent")
     )
 
+# Create or update log file
+def update_log(entry):
+    log_entry = f"{datetime.now()}: {entry}\n"
+    with open("bot_log.log", "a") as log_file:
+        log_file.write(log_entry)
+
+# Execute script and return output
+def execute_script(script_path):
+    try:
+        result = subprocess.run(["bash", script_path], capture_output=True, text=True)
+        return result.stdout if result.returncode == 0 else result.stderr
+    except Exception as e:
+        return f"Error executing script: {str(e)}"
+
 # Search for relevant posts and respond
 def scan_and_respond(reddit, responses, triggers, subreddits):
     for subreddit_name in subreddits:
@@ -35,39 +51,42 @@ def scan_and_respond(reddit, responses, triggers, subreddits):
             found_trigger = False  # To check if a trigger is found
 
             # Detect relevant keywords in the title or body and select the appropriate response
-for keyword in triggers:
-    if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
-        # Determine the appropriate response key based on the keyword
-        if keyword in responses["dupe_reply"]:
-            response_key = "dupe_reply"
-        elif keyword in responses["misc_commands"]:
-            response_key = "misc_commands"
-            # Execute or fetch output based on the misc command
-            if keyword == "run script":
-                # Example of executing a script
-                with open("path/to/script.sh") as script_file:
-                    response_text = responses[response_key][keyword] + f"\n{script_file.read()}"
-            elif keyword == "get logs":
-                with open("path/to/logfile.log") as log_file:
-                    response_text = responses[response_key][keyword] + f"\n{log_file.read()}"
-            elif keyword == "list files":
-                import os
-                files = os.listdir(".")
-                response_text = responses[response_key][keyword] + "\n" + "\n".join(files)
-            found_trigger = True
-            break
-        else:
-            response_key = "bug_reply"
-        
-        response_text = responses[response_key].get(keyword, responses[response_key]["default"])
-        found_trigger = True
-        break
+            for keyword in triggers:
+                if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
+                    if keyword in responses["dupe_reply"]:
+                        response_key = "dupe_reply"
+                    elif keyword in responses["misc_commands"]:
+                        response_key = "misc_commands"
+                        # Handle misc commands
+                        if "run script" in submission.selftext.lower():
+                            script_name = submission.selftext.lower().split("run script(")[-1].split(")")[0].strip()
+                            script_path = f"./scripts/{script_name}.sh"
+                            if os.path.isfile(script_path):
+                                response_text = f"Running `{script_name}`:\n\n```\n{execute_script(script_path)}\n```"
+                            else:
+                                response_text = f"Script `{script_name}` not found in the `scripts` directory."
+                        elif "get logs" in submission.selftext.lower():
+                            with open("bot_log.log", "r") as log_file:
+                                response_text = "Here are the recent logs:\n\n" + log_file.read()
+                        elif "list files" in submission.selftext.lower():
+                            files = os.listdir(".")
+                            response_text = "Files in the current directory:\n\n" + "\n".join(files)
+                        else:
+                            response_text = responses[response_key]["default"]
+                        found_trigger = True
+                        break
+                    else:
+                        response_key = "bug_reply"
 
-            
+                    response_text = responses[response_key].get(keyword, responses[response_key]["default"])
+                    found_trigger = True
+                    break
+
             if found_trigger and not submission.saved:
                 submission.reply(response_text)
                 submission.save()  # Mark as replied
                 print(f"Replied to post: {submission.title}")
+                update_log(f"Replied to post: {submission.title} with response: {response_text}")
 
 # Reply to a specific post link from manual issue trigger
 def reply_to_post(reddit, responses, triggers, post_url):
@@ -91,6 +110,7 @@ def reply_to_post(reddit, responses, triggers, post_url):
         
     submission.reply(response_text)
     print(f"Replied to specific post: {submission.title}")
+    update_log(f"Replied to specific post: {submission.title} with response: {response_text}")
 
 def main():
     responses = load_responses()
