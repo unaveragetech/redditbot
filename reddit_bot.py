@@ -34,39 +34,43 @@ def scan_and_respond(reddit, responses, triggers, subreddits):
         subreddit = reddit.subreddit(subreddit_name)
         print(f"Scanning subreddit: {subreddit_name}")
 
-        for submission in subreddit.new(limit=10):  # Checks the 10 most recent posts
-            if any(trigger.lower() in submission.title.lower() for trigger in triggers):
-                print(f"Found relevant post: {submission.title}")
+        for submission in subreddit.new(limit=10):  # Check the 10 most recent posts
+            response_text = "Thanks for sharing!"  # Default response
+            found_trigger = False  # To check if a trigger is found
 
-                # Check if already replied
-                if not submission.saved:
-                    # Use the appropriate response based on trigger keyword
-                    response_text = responses.get("bug_reply", "Thanks for sharing!")
-                    submission.reply(response_text)
-                    submission.save()
-                    print(f"Replied to post: {submission.title}")
+            # Detect relevant keywords in the title or body and select the appropriate response
+            for keyword in triggers:
+                if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
+                    response_key = "dupe_reply" if "dupe" in keyword else "bug_reply"
+                    response_text = responses.get(response_key, response_text)
+                    found_trigger = True
+                    break  # Stop at the first match to prevent multiple responses
+            
+            if found_trigger and not submission.saved:
+                submission.reply(response_text)
+                submission.save()  # Mark as replied
+                print(f"Replied to post: {submission.title}")
 
 # Reply to a specific post link from manual issue trigger
 def reply_to_post(reddit, responses, triggers, post_url):
     submission = reddit.submission(url=post_url)
     
-    # Detect relevant keyword in the title or body and select the corresponding response
     response_text = "Thanks for sharing!"  # Default response
-    found_trigger = False  # To check if a trigger is found
+    found_trigger = False
 
+    # Detect relevant keywords and select the appropriate response
     for keyword in triggers:
         if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
-            # Check if there’s a specific response for the keyword type
             response_key = "dupe_reply" if "dupe" in keyword else "bug_reply"
             response_text = responses.get(response_key, response_text)
             found_trigger = True
-            break  # Stop at the first match to prevent multiple responses
-
+            break
+    
     if not found_trigger:
         print("No specific trigger found, using the default response.")
         
     submission.reply(response_text)
-    print(f"Replied to post: {submission.title}")
+    print(f"Replied to specific post: {submission.title}")
 
 def main():
     config = load_config()
