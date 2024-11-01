@@ -8,7 +8,12 @@ from datetime import datetime
 # Load responses from the combined bot_text JSON file
 def load_bot_text():
     with open('bot_text.json', 'r') as bot_text_file:
-        return json.load(bot_text_file)["triggers_and_responses"]
+        data = json.load(bot_text_file)
+        if "triggers_and_responses" in data:
+            return data["triggers_and_responses"]
+        else:
+            raise ValueError("Expected key 'triggers_and_responses' not found in bot_text.json.")
+
 
 # Authenticate Reddit client using environment variables
 def authenticate():
@@ -94,20 +99,22 @@ def scan_and_respond(reddit, bot_text, subreddits):
 # Reply to a specific post link from manual issue trigger
 def reply_to_post(reddit, bot_text, post_url):
     submission = reddit.submission(url=post_url)
-    
-    response_text = "I'm sorry, I couldn't find a suitable response for your post."
-    found_trigger = False
+    response_text = "No relevant triggers found."
 
-    # Detect relevant keywords and select the appropriate response
-    for item in bot_text:
-        trigger = item["trigger"]
-        if trigger.lower() in submission.title.lower() or trigger.lower() in submission.selftext.lower():
-            response_text = item["response"]
-            found_trigger = True
-            break
+    # Ensure bot_text is a list
+    if isinstance(bot_text, list):
+        for item in bot_text:
+            if isinstance(item, dict) and "trigger" in item:
+                trigger = item["trigger"]
+                if (trigger.lower() in submission.title.lower() or 
+                    trigger.lower() in submission.selftext.lower()):
+                    response_text = item.get("response", response_text)
+                    break
+    else:
+        raise ValueError("Expected 'bot_text' to be a list of dictionaries.")
 
-    if not found_trigger:
-        print("No specific trigger found, using the default response.")
+    submission.reply(response_text)
+    print(f"Replied to specific post: {submission.title} with response: {response_text}")
         
     submission.reply(response_text)
     print(f"Replied to specific post: {submission.title}")
