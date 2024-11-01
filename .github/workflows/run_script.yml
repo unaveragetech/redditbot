@@ -3,13 +3,9 @@ name: Run Script
 on:
   workflow_dispatch:
     inputs:
-      script_name:
-        description: 'Name of the script to run'
+      command:
+        description: 'Full botrun command in the format !botrun(script-name-arguments)'
         required: true
-      arguments:
-        description: 'Arguments for the script'
-        required: false
-        default: ''
 
 jobs:
   run-script:
@@ -32,10 +28,24 @@ jobs:
             echo "No requirements.txt found. Skipping dependency installation."
           fi
 
+      - name: Parse script name and arguments from command
+        run: |
+          # Extract script name and arguments from the input command
+          COMMAND="${{ github.event.inputs.command }}"
+          if [[ $COMMAND =~ !botrun\(([^-]+)-?(.*)\) ]]; then
+            SCRIPT_NAME="${BASH_REMATCH[1]}"
+            ARGUMENTS="${BASH_REMATCH[2]}"
+          else
+            echo "Invalid command format. Expected: !botrun(script-name-arguments)"
+            exit 1
+          fi
+          echo "Script name: $SCRIPT_NAME"
+          echo "Arguments: $ARGUMENTS"
+
       - name: Run the specified script
         run: |
-          echo "Running script: ${{ github.event.inputs.script_name }} with arguments: ${{ github.event.inputs.arguments }}"
-          python scripts/${{ github.event.inputs.script_name }} ${{ github.event.inputs.arguments }} > output.log 2>&1 || echo "Script failed. Check output.log for details."
+          echo "Running script: $SCRIPT_NAME with arguments: $ARGUMENTS"
+          python scripts/$SCRIPT_NAME $ARGUMENTS > output.log 2>&1 || echo "Script failed. Check output.log for details."
 
       - name: Upload output log
         uses: actions/upload-artifact@v3
