@@ -74,7 +74,7 @@ jobs:
           echo "$(date) - $post_url - Response: $response" >> reddit_responses.log
 
           # Check for duplicate response
-          if grep -q "$post_url - Response: $response" reddit_responses.log; then
+          if grep -q "$(echo "$post_url" | sed 's/[^a-zA-Z0-9\/:._-]//g') - Response: $(echo "$response" | sed 's/[^a-zA-Z0-9.,?!_\'\" -]//g')" reddit_responses.log; then
             echo "Duplicate response detected for post: $post_url. Skipping."
             exit 0
           fi
