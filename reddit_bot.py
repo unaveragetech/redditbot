@@ -34,7 +34,7 @@ def update_log(entry):
 # Trigger GitHub Actions workflow for the script and get the output URL
 def trigger_github_action(script_name, arguments):
     try:
-        github_api_url = "https://api.github.com/repos/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/actions/workflows/run_script.yml/dispatches"
+        github_api_url = "https://api.github.com/repos/unaveragetech/redditbot/actions/workflows/run_script.yml/dispatches"
         headers = {
             "Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}",
             "Accept": "application/vnd.github.v3+json"
@@ -100,7 +100,6 @@ def scan_and_respond(reddit, responses, triggers, subreddits, responded_posts):
                 print(f"Replied to post: {submission.title}")
                 update_log(f"Replied to post: {submission.title} with response: {response_text}")
 
-# Reply to a specific post link from manual issue trigger
 def reply_to_post(reddit, responses, triggers, post_url, responded_posts):
     submission = reddit.submission(url=post_url)
     
@@ -108,25 +107,35 @@ def reply_to_post(reddit, responses, triggers, post_url, responded_posts):
         print(f"Already responded to post: {submission.title}. Skipping.")
         return
 
+    # Initialize default response
     response_text = responses["bug_reply"]["default"]
     found_trigger = False
+    matched_keywords = []
 
     # Detect relevant keywords and select the appropriate response
     for keyword in triggers:
         if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
+            matched_keywords.append(keyword)
+            # Choose a response from the appropriate category based on the keyword
             response_key = "bug_reply" if keyword in responses["bug_reply"] else "dupe_reply"
-            response_text = responses[response_key].get(keyword, responses[response_key]["default"])
+            
+            if keyword in responses[response_key]:
+                response_text = responses[response_key][keyword]
+            else:
+                response_text = responses[response_key]["default"]
+                
             found_trigger = True
             break
 
     if not found_trigger:
         print("No specific trigger found, using the default response.")
-        
+    
     submission.reply(response_text)
     submission.save()  # Mark as replied
     responded_posts.add(submission.id)  # Add to responded posts
-    print(f"Replied to specific post: {submission.title}")
-    update_log(f"Replied to specific post: {submission.title} with response: {response_text}")
+    print(f"Replied to specific post: {submission.title} with response: {response_text} (Matched Keywords: {matched_keywords})")
+    update_log(f"Replied to specific post: {submission.title} with response: {response_text} (Matched Keywords: {matched_keywords})")
+
 
 def main():
     responses = load_responses()
