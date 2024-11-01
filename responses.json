@@ -1,21 +1,19 @@
 {
     "_comment": "This file defines response types based on the type of issue detected in triggers.json. Adjust the response text to match specific triggers.",
     "bug_reply": {
-        "default": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
-        "item duplication": "Item duplication is often caused by a glitch. Try reloading the game or checking for updates. For more information, visit: https://minecraft.fandom.com/wiki/Duplication.",
-        "redstone bug": "Redstone bugs can be tricky! Make sure to check for updates or try a different setup. You can find solutions here: https://minecraft.fandom.com/wiki/Redstone.",
-        "chunk loading issue": "Chunk loading issues can occur due to server lag or client problems. Make sure your game is up to date.",
-        "inventory bug": "If you're facing inventory issues, try restarting the game or checking your resource pack compatibility.",
-        "mob glitch": "Mob glitches can be caused by server lag. Check for updates and try a different server if the problem persists."
-        
+        "default": "It sounds like you might be experiencing a common Python issue. Here's what you can try: ...",
+        "syntax error": "Syntax errors often occur due to misplaced characters or indentation. Check your code and try running it again.",
+        "runtime error": "Runtime errors can be tricky! Ensure all dependencies are properly installed and your code is correct.",
+        "memory leak": "Memory leaks can lead to performance issues. Use a memory profiler to identify problematic code.",
+        "import error": "If you're facing import errors, make sure the module is installed and check your import statements.",
+        "infinite loop": "Infinite loops can freeze your program. Review your loop conditions and break statements."
     },
     "dupe_reply": {
         "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
-        "dupe": "You may be encountering a classic duplication glitch. Make sure your game is updated and restart if necessary. More details can be found at: https://minecraft.fandom.com/wiki/Duplication.",
-        "furnace dupe": "Furnace duplication can occur due to improper item handling. Always make sure to follow the crafting rules properly.",
-        "piston duplication": "If you're experiencing piston duplication, check your redstone configurations and update your client.",
-        "entity duplication": "Entity duplication issues are often linked to server errors. Try refreshing the server connection.",
-        "block duplication exploit": "Exploiting block duplication can lead to game bans. Ensure you're following the community rules."
-        
+        "module conflict": "Module conflicts can arise when two packages have overlapping functionality. Check your installed packages for compatibility.",
+        "parameter error": "Parameter errors usually happen when the function call doesn't match the expected arguments. Verify your function usage.",
+        "data type error": "Data type errors often occur when a function receives the wrong type of data. Double-check your variable types.",
+        "json decode error": "JSON decode errors typically indicate issues with the data format. Ensure your JSON is properly structured.",
+        "inference error": "Inference errors in AI models can occur due to incorrect input. Validate your input data for expected formats."
     }
 }
