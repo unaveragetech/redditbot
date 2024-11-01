@@ -71,6 +71,7 @@ def scan_and_respond(reddit, responses, triggers, subreddits, responded_posts):
 
             # Detect command for script execution
             if "!botrun(" in submission.selftext:
+                print("Found !botrun command.in post body")
                 start = submission.selftext.find("!botrun(") + len("!botrun(")
                 end = submission.selftext.find(")", start)
                 command = submission.selftext[start:end].strip()
