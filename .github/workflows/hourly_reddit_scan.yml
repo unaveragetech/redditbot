@@ -59,13 +59,22 @@ jobs:
           if [ "${{ github.event_name }}" == "issues" ]; then
             # Check if post_url is set in the environment
             if [ -n "$post_url" ]; then
-              python reddit_bot.py --manual "$post_url"
+              response=$(python reddit_bot.py --manual "$post_url")
             elif [ -n "$query" ]; then
-              python reddit_bot.py --query "$query"
+              response=$(python reddit_bot.py --query "$query")
             else
               echo "Error: Neither a URL nor a query was found in the issue."
               exit 1
             fi
           else
-            python reddit_bot.py
+            response=$(python reddit_bot.py)
+          fi
+
+          # Log the response to a file
+          echo "$(date) - $post_url - Response: $response" >> reddit_responses.log
+
+          # Check for duplicate response
+          if grep -q "$post_url - Response: $response" reddit_responses.log; then
+            echo "Duplicate response detected for post: $post_url. Skipping."
+            exit 0
           fi
