@@ -9,10 +9,7 @@ from datetime import datetime
 def load_bot_text():
     with open('bot_text.json', 'r') as bot_text_file:
         data = json.load(bot_text_file)
-        if "triggers_and_responses" in data:
-            return data["triggers_and_responses"]
-        else:
-            raise ValueError("Expected key 'triggers_and_responses' not found in bot_text.json.")
+        return data["bot_text"]  # Return the list directly
 
 
 # Authenticate Reddit client using environment variables
