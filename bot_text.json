@@ -1,0 +1,22 @@
+{
+  "triggers_and_responses": {
+    "bot_help": {
+      "response": "Here are the available commands you can use:\n\n- **!botrun(script-name-arguments)**: Runs a specified script from the repository and returns the output. \n   - *Example*: `!botrun(test_script-Hello World)` to run `test_script.py` with the argument 'Hello World'.\n\n- **bug**: Reports or provides guidance on known issues or bugs.\n   - *Usage*: Include 'bug' in your post title or content to receive automatic support for known bugs.\n\n- **dupe**: Identifies if the issue mentioned is a known duplicate and offers resources.\n   - *Usage*: Mention 'dupe' in your post to get duplicate detection and guidance.\n\n- **general_help**: Provides general information and guidance on how to use the bot.\n   - *Usage*: Include 'general_help' in your post to receive a helpful overview of what you can do.\n\n- **test_script**: Runs a simple test script to ensure that the script execution system is working correctly.\n   - *Usage*: Mention 'test_script' to trigger the bot and check for a successful run of a predefined script."
+    },
+    "bug": {
+      "response": "It seems like you've encountered a known bug. Please refer to our [Bug Fix Guide] for troubleshooting steps or additional help. Feel free to report any new findings."
+    },
+    "dupe": {
+      "response": "This appears to be a duplicate issue. Check our [Known Issues Page] to see if there's a solution or any ongoing discussion related to your problem."
+    },
+    "general_help": {
+      "response": "I'm here to help! You can ask about:\n- Known bugs: Type 'bug' in your post.\n- Duplicate issues: Use 'dupe' in your post.\n- Running scripts: Use `!botrun(script-name-arguments)`.\n- Testing functionality: Mention 'test_script'."
+    },
+    "test_script": {
+      "response": "Running the test script... Please wait for the results. If successful, you'll see the script output here shortly!"
+    },
+    "!botrun": {
+      "response": "To run a script from the repository, use the format: `!botrun(script-name-arguments)`.\n\n- **script-name**: The name of the script file without the '.py' extension (e.g., `test_script`).\n- **arguments**: Any arguments needed by the script, separated by spaces.\n\n*Example*: `!botrun(test_script-Hello World)` will run `test_script.py` with the argument 'Hello World'."
+    }
+  }
+}
