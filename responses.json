@@ -1,0 +1,17 @@
+{
+    "_comment": "This file defines response types based on the type of issue detected in triggers.json. Adjust the response text to match specific triggers.",
+    "bug_reply": {
+        "default": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
+        "item duplication": "Item duplication is often caused by a glitch. Try reloading the game or checking for updates. For more information, visit: https://minecraft.fandom.com/wiki/Duplication.",
+        "redstone bug": "Redstone bugs can be tricky! Make sure to check for updates or try a different setup. You can find solutions here: https://minecraft.fandom.com/wiki/Redstone."
+    },
+    "dupe_reply": {
+        "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
+        "dupe": "You may be encountering a classic duplication glitch. Make sure your game is updated and restart if necessary. More details can be found at: https://minecraft.fandom.com/wiki/Duplication."
+    },
+    "misc_commands": {
+        "run script": "Executing script... Here’s the output:",
+        "get logs": "Fetching logs... Here’s the latest log output:",
+        "list files": "Listing files in the current directory:"
+    }
+}
