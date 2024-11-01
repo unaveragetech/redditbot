@@ -74,6 +74,8 @@ def scan_and_respond(reddit, responses, triggers, subreddits, responded_posts):
                 start = submission.selftext.find("!botrun(") + len("!botrun(")
                 end = submission.selftext.find(")", start)
                 command = submission.selftext[start:end].strip()
+                print(f"Selftext: {submission.selftext}")
+
 
                 if "-" in command:
                     script_name, arguments = command.split("-", 1)
