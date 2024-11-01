@@ -56,12 +56,16 @@ def trigger_github_action(script_name, arguments):
         return f"An error occurred while triggering the GitHub Action: {str(e)}"
 
 # Search for relevant posts and respond
-def scan_and_respond(reddit, responses, triggers, subreddits):
+def scan_and_respond(reddit, responses, triggers, subreddits, responded_posts):
     for subreddit_name in subreddits:
         subreddit = reddit.subreddit(subreddit_name)
         print(f"Scanning subreddit: {subreddit_name}")
 
         for submission in subreddit.new(limit=10):  # Check the 10 most recent posts
+            if submission.id in responded_posts:
+                print(f"Already responded to post: {submission.title}. Skipping.")
+                continue
+            
             response_text = responses["bug_reply"]["default"]  # Default response
             found_trigger = False
 
@@ -92,13 +96,18 @@ def scan_and_respond(reddit, responses, triggers, subreddits):
             if found_trigger and not submission.saved:
                 submission.reply(response_text)
                 submission.save()  # Mark as replied
+                responded_posts.add(submission.id)  # Add to responded posts
                 print(f"Replied to post: {submission.title}")
                 update_log(f"Replied to post: {submission.title} with response: {response_text}")
 
 # Reply to a specific post link from manual issue trigger
-def reply_to_post(reddit, responses, triggers, post_url):
+def reply_to_post(reddit, responses, triggers, post_url, responded_posts):
     submission = reddit.submission(url=post_url)
     
+    if submission.id in responded_posts:
+        print(f"Already responded to post: {submission.title}. Skipping.")
+        return
+
     response_text = responses["bug_reply"]["default"]
     found_trigger = False
 
@@ -114,6 +123,8 @@ def reply_to_post(reddit, responses, triggers, post_url):
         print("No specific trigger found, using the default response.")
         
     submission.reply(response_text)
+    submission.save()  # Mark as replied
+    responded_posts.add(submission.id)  # Add to responded posts
     print(f"Replied to specific post: {submission.title}")
     update_log(f"Replied to specific post: {submission.title} with response: {response_text}")
 
@@ -122,15 +133,25 @@ def main():
     triggers = load_triggers()
     reddit = authenticate()
     subreddits = ["TextRpgGame"]
+    
+    # Load previously responded posts
+    responded_posts = set()
+    if os.path.exists("responded_posts.json"):
+        with open("responded_posts.json", "r") as f:
+            responded_posts = set(json.load(f))
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--manual", help="URL of specific Reddit post to reply to")
     args = parser.parse_args()
 
     if args.manual:
-        reply_to_post(reddit, responses, triggers, args.manual)
+        reply_to_post(reddit, responses, triggers, args.manual, responded_posts)
     else:
-        scan_and_respond(reddit, responses, triggers, subreddits)
+        scan_and_respond(reddit, responses, triggers, subreddits, responded_posts)
+
+    # Save the responded posts
+    with open("responded_posts.json", "w") as f:
+        json.dump(list(responded_posts), f)
 
 if __name__ == "__main__":
     main()
