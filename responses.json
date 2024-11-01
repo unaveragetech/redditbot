@@ -3,15 +3,19 @@
     "bug_reply": {
         "default": "It sounds like you might be experiencing a common Minecraft issue. Here's what you can try: ...",
         "item duplication": "Item duplication is often caused by a glitch. Try reloading the game or checking for updates. For more information, visit: https://minecraft.fandom.com/wiki/Duplication.",
-        "redstone bug": "Redstone bugs can be tricky! Make sure to check for updates or try a different setup. You can find solutions here: https://minecraft.fandom.com/wiki/Redstone."
+        "redstone bug": "Redstone bugs can be tricky! Make sure to check for updates or try a different setup. You can find solutions here: https://minecraft.fandom.com/wiki/Redstone.",
+        "chunk loading issue": "Chunk loading issues can occur due to server lag or client problems. Make sure your game is up to date.",
+        "inventory bug": "If you're facing inventory issues, try restarting the game or checking your resource pack compatibility.",
+        "mob glitch": "Mob glitches can be caused by server lag. Check for updates and try a different server if the problem persists."
+        // Add similar responses for each relevant trigger
     },
     "dupe_reply": {
         "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
-        "dupe": "You may be encountering a classic duplication glitch. Make sure your game is updated and restart if necessary. More details can be found at: https://minecraft.fandom.com/wiki/Duplication."
-    },
-    "misc_commands": {
-        "run script": "Executing script... Here’s the output:",
-        "get logs": "Fetching logs... Here’s the latest log output:",
-        "list files": "Listing files in the current directory:"
+        "dupe": "You may be encountering a classic duplication glitch. Make sure your game is updated and restart if necessary. More details can be found at: https://minecraft.fandom.com/wiki/Duplication.",
+        "furnace dupe": "Furnace duplication can occur due to improper item handling. Always make sure to follow the crafting rules properly.",
+        "piston duplication": "If you're experiencing piston duplication, check your redstone configurations and update your client.",
+        "entity duplication": "Entity duplication issues are often linked to server errors. Try refreshing the server connection.",
+        "block duplication exploit": "Exploiting block duplication can lead to game bans. Ensure you're following the community rules."
+        // Add similar responses for each relevant trigger
     }
 }
