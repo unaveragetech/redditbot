@@ -7,7 +7,7 @@
         "chunk loading issue": "Chunk loading issues can occur due to server lag or client problems. Make sure your game is up to date.",
         "inventory bug": "If you're facing inventory issues, try restarting the game or checking your resource pack compatibility.",
         "mob glitch": "Mob glitches can be caused by server lag. Check for updates and try a different server if the problem persists."
-        // Add similar responses for each relevant trigger
+        
     },
     "dupe_reply": {
         "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
@@ -16,6 +16,6 @@
         "piston duplication": "If you're experiencing piston duplication, check your redstone configurations and update your client.",
         "entity duplication": "Entity duplication issues are often linked to server errors. Try refreshing the server connection.",
         "block duplication exploit": "Exploiting block duplication can lead to game bans. Ensure you're following the community rules."
-        // Add similar responses for each relevant trigger
+        
     }
 }
