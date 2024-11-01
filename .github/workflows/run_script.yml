@@ -24,13 +24,25 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "No requirements.txt found. Skipping dependency installation."
+          fi
+
       - name: Run the specified script
         run: |
           echo "Running script: ${{ github.event.inputs.script_name }} with arguments: ${{ github.event.inputs.arguments }}"
-          python scripts/${{ github.event.inputs.script_name }} ${{ github.event.inputs.arguments }} > output.log
+          python scripts/${{ github.event.inputs.script_name }} ${{ github.event.inputs.arguments }} > output.log 2>&1 || echo "Script failed. Check output.log for details."
 
       - name: Upload output log
         uses: actions/upload-artifact@v3
         with:
           name: script-output
           path: output.log
+
+      - name: Notify on script failure
+        if: failure()
+        run: echo "Script execution failed. Please check the 'script-output' artifact for details."
