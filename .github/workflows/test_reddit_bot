@@ -31,4 +31,4 @@ jobs:
           USER_AGENT: ${{ secrets.USER_AGENT }}
           POST_URL: "${{ github.event.issue.title }}" # Set issue title as POST_URL
         run: |
-          python test.py
+          python test_script.py
