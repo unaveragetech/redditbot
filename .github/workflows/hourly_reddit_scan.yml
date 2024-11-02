@@ -1,4 +1,4 @@
-# .github/workflows/reddit_bot.yml
+ #.github/workflows/reddit_bot.yml
 name: Reddit Bot Automation
 
 on:
@@ -25,15 +25,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Extract URL or Command
+      - name: Extract URL or Query
         id: extract_info
         run: |
           issue_title="$(jq -r '.issue.title' < $GITHUB_EVENT_PATH)"
           issue_body="$(jq -r '.issue.body' < $GITHUB_EVENT_PATH)"
           
-          echo "Issue title: $issue_title"
-          echo "Issue body: $issue_body"
-
           # Check if title or body contains a Reddit URL
           url_regex="https:\/\/(www\.)?reddit\.com\/r\/[^ ]+"
           if [[ $issue_title =~ $url_regex ]]; then
@@ -59,21 +56,9 @@ jobs:
           PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           USER_AGENT: 'your_bot_user_agent'
         run: |
-          response=""
-
           if [ "${{ github.event_name }}" == "issues" ]; then
-            # Check for the !botrun and !botrunn commands in the issue body
-            if echo "$issue_body" | grep -q "!botrun("; then
-              command=$(echo "$issue_body" | grep -o "!botrun([^)]*)")
-              script_name=$(echo "$command" | sed 's/!botrun(\(.*\))/\1/')
-              echo "Detected script to run: $script_name"
-              response=$(python runner.py "$script_name")
-            elif echo "$issue_body" | grep -q "!botrunn("; then
-              command=$(echo "$issue_body" | grep -o "!botrunn([^)]*)")
-              script_name=$(echo "$command" | sed 's/!botrunn(\(.*\))/\1/')
-              echo "Detected script to run: $script_name"
-              response=$(python runner.py "$script_name")
-            elif [ -n "$post_url" ]; then
+            # Check if post_url is set in the environment
+            if [ -n "$post_url" ]; then
               response=$(python reddit_bot.py --manual "$post_url")
             elif [ -n "$query" ]; then
               response=$(python reddit_bot.py --query "$query")
@@ -92,9 +77,4 @@ jobs:
           if grep -q "$post_url - Response: $response" reddit_responses.log; then
             echo "Duplicate response detected for post: $post_url. Skipping."
             exit 0
-          fi
-
-          # Post the response back to the Reddit comment
-          if [ -n "$post_url" ]; then
-            python scripts/post_response.py "$response" "$post_url"
           fi
