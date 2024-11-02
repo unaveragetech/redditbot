@@ -74,15 +74,16 @@ def scan_and_respond(reddit, responses, triggers, subreddits, responded_posts):
                 start = submission.selftext.find("!botrun(") + len("!botrun(")
                 end = submission.selftext.find(")", start)
                 command = submission.selftext[start:end].strip()
-
+            
                 if "-" in command:
                     script_name, arguments = command.split("-", 1)
                 else:
                     script_name, arguments = command, ""
-
+            
                 # Trigger GitHub Actions for the script
-                response_text = trigger_github_action(script_name, arguments)
+                response_text = trigger_github_action(script_name.strip(), arguments.strip())
                 found_trigger = True
+
 
             # Detect relevant keywords and prepare a response
             if not found_trigger:
