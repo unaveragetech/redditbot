@@ -94,7 +94,7 @@ jobs:
             exit 0
           fi
 
-          # Optional: Post the response back to the Reddit comment
-          # This requires a separate script to handle posting the response
-          # python post_response.py "$response" "$post_url"
-
+          # Post the response back to the Reddit comment
+          if [ -n "$post_url" ]; then
+            python scripts/post_response.py "$response" "$post_url"
+          fi
