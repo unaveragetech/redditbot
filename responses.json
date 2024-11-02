@@ -1,19 +1,28 @@
 {
     "_comment": "This file defines response types based on the type of issue detected in triggers.json. Adjust the response text to match specific triggers.",
     "bug_reply": {
-        "default": "It sounds like you might be experiencing a common Python issue. Here's what you can try: ...",
-        "syntax error": "Syntax errors often occur due to misplaced characters or indentation. Check your code and try running it again.",
+        "default": "It sounds like your getting an issue related to a topic i may cover be specific in your post and if i detect something i can help with i will.",
+        "syntax error": "Syntax errors often occur due to misplaced characters or indentation. Check your code and try running it again. or send your error here (https://github.com/unaveragetech/Gitbot)",
         "runtime error": "Runtime errors can be tricky! Ensure all dependencies are properly installed and your code is correct.",
         "memory leak": "Memory leaks can lead to performance issues. Use a memory profiler to identify problematic code.",
-        "import error": "If you're facing import errors, make sure the module is installed and check your import statements.",
+        "import error": "If you're facing import errors, make sure the module is installed and check your import statements. or use this https://github.com/unaveragetech/Pipin this will keep your env updated ",
         "infinite loop": "Infinite loops can freeze your program. Review your loop conditions and break statements."
     },
     "dupe_reply": {
-        "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
-        "module conflict": "Module conflicts can arise when two packages have overlapping functionality. Check your installed packages for compatibility.",
-        "parameter error": "Parameter errors usually happen when the function call doesn't match the expected arguments. Verify your function usage.",
-        "data type error": "Data type errors often occur when a function receives the wrong type of data. Double-check your variable types.",
-        "json decode error": "JSON decode errors typically indicate issues with the data format. Ensure your JSON is properly structured.",
-        "inference error": "Inference errors in AI models can occur due to incorrect input. Validate your input data for expected formats."
-    }
+    "default": "Duplication glitches can be tricky! Try these steps to resolve or avoid it: ...",
+    "module conflict": "Module conflicts can arise when two packages have overlapping functionality. Check your installed packages for compatibility.",
+    "parameter error": "Parameter errors usually happen when the function call doesn't match the expected arguments. Verify your function usage.",
+    "data type error": "Data type errors often occur when a function receives the wrong type of data. Double-check your variable types.",
+    "json decode error": "JSON decode errors typically indicate issues with the data format. Ensure your JSON is properly structured.",
+    "inference error": "Inference errors in AI models can occur due to incorrect input. Validate your input data for expected formats.",
+    "syntax error": "Syntax errors happen when the code structure is incorrect. Review your code for missing or misplaced symbols.",
+    "type mismatch": "Type mismatch errors occur when an operation is performed on incompatible types. Ensure you're using the correct types in your operations.",
+    "runtime error": "Runtime errors occur while the program is executing. Check your logic and ensure all variables are initialized.",
+    "out of bounds error": "Out of bounds errors can occur when attempting to access an array index that doesn't exist. Verify your index values.",
+    "permission error": "Permission errors arise when your program doesn't have the right access. Check your file and directory permissions.",
+    "network error": "Network errors can occur due to connectivity issues. Ensure your device is connected to the internet and retry the operation.",
+    "timeout error": "Timeout errors happen when a process takes too long to complete. Consider optimizing your code or increasing the timeout limit.",
+    "version mismatch": "Version mismatch errors arise when using incompatible versions of libraries. Ensure all dependencies are up to date.",
+    "database connection error": "Database connection errors can happen due to incorrect credentials or configurations. Verify your database settings.",
+    "file not found error": "File not found errors occur when a specified file cannot be located. Check the file path and ensure the file exists."
 }
