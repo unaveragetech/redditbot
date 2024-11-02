@@ -25,4 +25,5 @@
     "version mismatch": "Version mismatch errors arise when using incompatible versions of libraries. Ensure all dependencies are up to date.",
     "database connection error": "Database connection errors can happen due to incorrect credentials or configurations. Verify your database settings.",
     "file not found error": "File not found errors occur when a specified file cannot be located. Check the file path and ensure the file exists."
+    }
 }
