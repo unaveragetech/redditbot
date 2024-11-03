@@ -1,9 +1,8 @@
-# .github/workflows/reddit_bot.yml
 name: Reddit Bot Automation
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
+    - cron: '*/5 * * * *'  # Runs every 5 minutes
   issues:
     types: [opened]  # Triggered when an issue is opened
 
@@ -14,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          persist-credentials: true  # Required to push back to the repo
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -79,10 +80,20 @@ jobs:
           fi
 
           # Log the response to a file
-          echo "$(date) - $post_url - Response: $response" >> reddit_responses.log
+          if [ -n "$post_url" ]; then
+            echo "$(date) - $post_url - Response: $response" >> reddit_responses.log
+          fi
 
           # Check for duplicate response
           if grep -q "$post_url - Response: $response" reddit_responses.log; then
             echo "Duplicate response detected for post: $post_url. Skipping."
             exit 0
           fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add reddit_responses.log
+          git commit -m "Update reddit_responses.log with new responses" || echo "No changes to commit"
+          git push
