@@ -3,7 +3,8 @@ name: Reddit Bot Automation
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
+    - cron: '*/1 * * * *'  # Runs every 10 minutes
+
   issues:
     types: [opened]  # Triggered when an issue is opened
 
