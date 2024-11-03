@@ -62,6 +62,11 @@ jobs:
           USER_AGENT: 'your_bot_user_agent'
         run: |
           response=""
+          post_url="${{ env.post_url }}"
+          query="${{ env.query }}"
+
+          # Log start of run
+          echo "$(date) - Workflow triggered: $GITHUB_EVENT_NAME" >> reddit_responses.log
 
           if [ "${{ github.event_name }}" == "issues" ]; then
             # Check for the !botrun and !botrunn commands in the issue body
@@ -83,16 +88,8 @@ jobs:
             response=$(python reddit_bot.py)
           fi
 
-          # Log the response to a file
-          if [ -n "$post_url" ]; then
-            echo "$(date) - $post_url - Response: $response" >> reddit_responses.log
-          fi
-
-          # Check for duplicate response
-          if grep -q "$post_url - Response: $response" reddit_responses.log; then
-            echo "Duplicate response detected for post: $post_url. Skipping."
-            exit 0
-          fi
+          # Log the response and post details
+          echo "$(date) - URL/Query: ${post_url:-$query} - Response: $response" >> reddit_responses.log
 
       - name: Commit and Push Changes
         run: |
