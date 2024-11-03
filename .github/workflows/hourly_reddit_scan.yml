@@ -1,4 +1,4 @@
- #.github/workflows/reddit_bot.yml
+# .github/workflows/reddit_bot.yml
 name: Reddit Bot Automation
 
 on:
@@ -56,9 +56,17 @@ jobs:
           PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           USER_AGENT: 'your_bot_user_agent'
         run: |
+          response=""
+
           if [ "${{ github.event_name }}" == "issues" ]; then
-            # Check if post_url is set in the environment
-            if [ -n "$post_url" ]; then
+            # Check for the !botrun and !botrunn commands in the issue body
+            if echo "$issue_body" | grep -q "!botrun("; then
+              command=$(echo "$issue_body" | grep -o "!botrun([^)]*)")
+              response=$(python runner.py "$command")
+            elif echo "$issue_body" | grep -q "!botrunn("; then
+              command=$(echo "$issue_body" | grep -o "!botrunn([^)]*)")
+              response=$(python runner.py "$command")
+            elif [ -n "$post_url" ]; then
               response=$(python reddit_bot.py --manual "$post_url")
             elif [ -n "$query" ]; then
               response=$(python reddit_bot.py --query "$query")
