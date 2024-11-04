@@ -2,6 +2,7 @@ import os
 import praw
 import json
 import argparse
+import requests
 from datetime import datetime
 from random import choice
 
@@ -41,6 +42,27 @@ def update_log(entry):
     with open("bot_log.log", "a") as log_file:
         log_file.write(log_entry)
 
+# Generate a prompt for the LLM
+def generate_llm_prompt(post_title, post_body, user_profile):
+    prompt = f"""
+    You are a helpful and friendly assistant. Here is some context about your personality:
+    - Mannerisms: {', '.join(user_profile.get('mannerisms', []))}
+    - Traits: {', '.join(user_profile.get('traits', []))}
+
+    Your task is to generate a helpful and insightful response to the following Reddit post:
+    - **Title**: {post_title}
+    - **Body**: {post_body}
+
+    Please respond in a manner consistent with your personality and provide relevant information, advice, or support based on the post content.
+    """
+    return prompt
+
+# Call the LLM to generate a response
+def call_llm(prompt):
+    # Use the Ollama API to generate a response
+    response = requests.post("http://localhost:11434/generate", json={"prompt": prompt})
+    return response.json().get('text', "I'm sorry, I couldn't generate a response.")
+
 # Construct a dynamic response based on user profile and inspirations
 def construct_response(base_response, user_profile, inspirations):
     response = base_response
@@ -58,32 +80,27 @@ def reply_to_post(reddit, responses, triggers, post_url, responded_posts):
         # Extract the submission ID from the URL
         submission_id = post_url.split('/')[-3]
         submission = reddit.submission(id=submission_id)
-        
+
         # Check if the bot has already responded to this post
         if submission.id in responded_posts:
             print(f"Already responded to post: {submission.title}. Skipping.")
             return
+
+        user_profile = load_user_profile()
+        inspirations = load_inspirations()
         
-        response_text = responses["bug_reply"]["default"]  # Default response
-        found_trigger = False
+        # Generate a prompt for the LLM based on the post
+        llm_prompt = generate_llm_prompt(submission.title, submission.selftext, user_profile)
 
-        # Detect relevant keywords and prepare a response
-        for keyword in triggers:
-            if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
-                response_key = "bug_reply" if keyword in responses["bug_reply"] else "dupe_reply"
-                base_response = responses[response_key].get(keyword, responses[response_key]["default"])
-                user_profile = load_user_profile()
-                inspirations = load_inspirations()
-                response_text = construct_response(base_response, user_profile, inspirations)
-                found_trigger = True
-                break
+        # Call the LLM to get the response
+        llm_response = call_llm(llm_prompt)
 
-        if found_trigger and not submission.saved:
-            submission.reply(response_text)
-            submission.save()  # Mark as replied
-            responded_posts.add(submission.id)  # Add to responded posts
-            print(f"Replied to post: {submission.title}")
-            update_log(f"Replied to post: {submission.title} with response: {response_text}")
+        # Reply to the post with the LLM's response
+        submission.reply(llm_response)
+        submission.save()  # Mark as replied
+        responded_posts.add(submission.id)  # Add to responded posts
+        print(f"Replied to post: {submission.title}")
+        update_log(f"Replied to post: {submission.title} with response: {llm_response}")
 
     except Exception as e:
         print(f"Error replying to post: {e}")
@@ -100,26 +117,30 @@ def scan_and_respond(reddit, responses, triggers, subreddits, responded_posts):
                 print(f"Already responded to post: {submission.title}. Skipping.")
                 continue
 
-            response_text = responses["bug_reply"]["default"]  # Default response
             found_trigger = False
 
             # Detect relevant keywords and prepare a response
             for keyword in triggers:
                 if keyword.lower() in submission.title.lower() or keyword.lower() in submission.selftext.lower():
-                    response_key = "bug_reply" if keyword in responses["bug_reply"] else "dupe_reply"
-                    base_response = responses[response_key].get(keyword, responses[response_key]["default"])
+                    # Use the LLM for generating a response
                     user_profile = load_user_profile()
                     inspirations = load_inspirations()
-                    response_text = construct_response(base_response, user_profile, inspirations)
+                    llm_prompt = generate_llm_prompt(submission.title, submission.selftext, user_profile)
+                    
+                    # Call the LLM and get the response
+                    llm_response = call_llm(llm_prompt)
+
+                    # Reply to the post
+                    submission.reply(llm_response)
+                    submission.save()  # Mark as replied
+                    responded_posts.add(submission.id)  # Add to responded posts
+                    print(f"Replied to post: {submission.title}")
+                    update_log(f"Replied to post: {submission.title} with response: {llm_response}")
                     found_trigger = True
                     break
 
-            if found_trigger and not submission.saved:
-                submission.reply(response_text)
-                submission.save()  # Mark as replied
-                responded_posts.add(submission.id)  # Add to responded posts
-                print(f"Replied to post: {submission.title}")
-                update_log(f"Replied to post: {submission.title} with response: {response_text}")
+            if found_trigger:
+                continue
 
 def main():
     responses = load_responses()
