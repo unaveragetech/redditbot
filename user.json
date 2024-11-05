@@ -1,14 +1,7 @@
 {
-    "name": "Alex",
-    "age": 25,
-    "birthplace": "New York",
-    "mannerisms": [
-        "Hums a tune before speaking.",
-        "Pauses for dramatic effect.",
-        "Adds a cheerful note at the end."
-    ],
-    "writing_conventions": {
-        "style": "casual and friendly",
-        "use_emojis": true
-    }
+  "writing_conventions": {
+    "style": "informal",
+    "use_emojis": true
+  },
+  "mannerisms": ["friendly", "supportive", "engaging"]
 }
