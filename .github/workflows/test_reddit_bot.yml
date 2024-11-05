@@ -8,7 +8,7 @@ on:
     types: [opened]         # Triggered when an issue is opened
 
 jobs:
-  run-reddit-bot:
+  setup-ollama-and-reddit-bot:
     runs-on: ubuntu-latest
 
     steps:
@@ -59,8 +59,13 @@ jobs:
           echo "Starting Ollama service..."
           nohup ollama serve &  # Start the Ollama service in the background
 
-      # Extract URL or Query from GitHub Issue
-      - name: Extract URL or Query from GitHub Issue
+  run-reddit-bot:
+    runs-on: ubuntu-latest
+    needs: setup-ollama-and-reddit-bot  # Run after Ollama is installed and started
+
+    steps:
+      # Extract URL or Query from the GitHub Issue
+      - name: Extract URL or Query
         id: extract_info
         run: |
           issue_title="$(jq -r '.issue.title' < $GITHUB_EVENT_PATH)"
@@ -83,23 +88,6 @@ jobs:
             echo "query=$query" >> $GITHUB_ENV
           fi
 
-      # List files in the current directory to check the structure
-      - name: List files in the current directory
-        run: |
-          echo "Listing files in the current directory..."
-          ls -la
-
-      # Check if reddit_bot.py exists
-      - name: Check if reddit_bot.py exists
-        run: |
-          echo "Checking for reddit_bot.py in the repository..."
-          if [ ! -f "reddit_bot.py" ]; then
-            echo "reddit_bot.py not found! Please check the file location."
-            exit 1
-          else
-            echo "reddit_bot.py found."
-          fi
-
       # Run Reddit Bot (Bot replies based on issue info or manual trigger)
       - name: Run Reddit Bot
         env:
@@ -116,24 +104,32 @@ jobs:
           # Log start of run
           echo "$(date) - Workflow triggered: $GITHUB_EVENT_NAME" >> reddit_responses.log
 
+          # Check if Python is available and its version
+          echo "Python version: $(python3 --version)"
+          
+          # Check if reddit_bot.py is in the directory
+          echo "Listing files in the current directory:"
+          ls -la
+
+          # Run the bot
           if [ "${{ github.event_name }}" == "issues" ]; then
             # Check for the !botrun and !botrunn commands in the issue body
             if echo "$issue_body" | grep -q "!botrun("; then
               command=$(echo "$issue_body" | grep -o "!botrun([^)]*)")
-              response=$(python reddit_bot.py "$command")
+              response=$(python3 reddit_bot.py "$command")
             elif echo "$issue_body" | grep -q "!botrunn("; then
               command=$(echo "$issue_body" | grep -o "!botrunn([^)]*)")
-              response=$(python reddit_bot.py "$command")
+              response=$(python3 reddit_bot.py "$command")
             elif [ -n "$post_url" ]; then
-              response=$(python reddit_bot.py --manual "$post_url")
+              response=$(python3 reddit_bot.py --manual "$post_url")
             elif [ -n "$query" ]; then
-              response=$(python reddit_bot.py --query "$query")
+              response=$(python3 reddit_bot.py --query "$query")
             else
               echo "Error: Neither a URL nor a query was found in the issue."
               exit 1
             fi
           else
-            response=$(python reddit_bot.py)
+            response=$(python3 reddit_bot.py)
           fi
 
           # Log the response and post details
