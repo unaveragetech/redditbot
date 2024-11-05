@@ -88,15 +88,19 @@ jobs:
             echo "query=$query" >> $GITHUB_ENV
           fi
 
-      # Run Reddit Bot (Bot replies based on issue info or manual trigger)
-      - name: Run Reddit Bot
-        env:
-          CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-          USERNAME: ${{ secrets.REDDIT_USERNAME }}
-          PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
-          USER_AGENT: 'your_bot_user_agent'
+      # Navigate to the correct directory and run the bot
+      - name: Navigate to main directory and run Reddit Bot
         run: |
+          # Navigate to the directory where reddit_bot.py is located
+          cd $GITHUB_WORKSPACE  # Ensure we're in the root directory of the repository
+          echo "Current working directory: $(pwd)"
+          echo "Listing files in the current directory:"
+          ls -la  # This lists all files to verify that reddit_bot.py exists
+
+          # Verify Python version
+          echo "Python version: $(python3 --version)"
+
+          # Run the bot with the provided URL or query
           response=""
           post_url="${{ env.post_url }}"
           query="${{ env.query }}"
@@ -104,14 +108,7 @@ jobs:
           # Log start of run
           echo "$(date) - Workflow triggered: $GITHUB_EVENT_NAME" >> reddit_responses.log
 
-          # Check if Python is available and its version
-          echo "Python version: $(python3 --version)"
-          
-          # Check if reddit_bot.py is in the directory
-          echo "Listing files in the current directory:"
-          ls -la
-
-          # Run the bot
+          # Run the bot depending on the issue content
           if [ "${{ github.event_name }}" == "issues" ]; then
             # Check for the !botrun and !botrunn commands in the issue body
             if echo "$issue_body" | grep -q "!botrun("; then
