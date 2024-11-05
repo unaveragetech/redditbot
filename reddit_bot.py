@@ -5,6 +5,18 @@ import argparse
 import requests
 from datetime import datetime
 
+# Load responses from the JSON file
+def load_responses():
+    try:
+        with open('responses.json', 'r') as responses_file:
+            return json.load(responses_file)
+    except FileNotFoundError:
+        print("Error: responses.json file not found.")
+        return {}
+    except json.JSONDecodeError:
+        print("Error: responses.json file is not a valid JSON.")
+        return {}
+
 # Load user profile from the JSON file
 def load_user_profile():
     with open('user.json', 'r') as user_file:
@@ -123,7 +135,6 @@ def scan_and_respond(reddit, subreddits, responded_posts):
 def main():
     reddit = authenticate()
     subreddits = ["TextRpgGame"]  # Subreddit list to scan
-    responses = load_responses()
 
     # Load previously responded posts
     responded_posts = set()
