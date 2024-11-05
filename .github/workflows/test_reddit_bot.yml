@@ -1,3 +1,12 @@
+name: Reddit Bot Automation
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Check for new posts every 30 minutes
+    - cron: '0 * * * *'     # Run the full system every hour
+  issues:
+    types: [opened]         # Triggered when an issue is opened
+
 jobs:
   setup-ollama-and-reddit-bot:
     runs-on: ubuntu-latest
