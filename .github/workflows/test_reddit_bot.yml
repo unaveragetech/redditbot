@@ -59,13 +59,17 @@ jobs:
           echo "Starting Ollama service..."
           nohup ollama serve &  # Start the Ollama service in the background
 
+    outputs:
+      ollama_installed: true  # Indicate that Ollama has been successfully installed
+
   run-reddit-bot:
     runs-on: ubuntu-latest
     needs: setup-ollama-and-reddit-bot  # Run after Ollama is installed and started
+    environment: production  # Optional: Set environment, if needed
 
     steps:
       # Extract URL or Query from the GitHub Issue
-      - name: Extract URL or Query
+      - name: Extract URL or Query from GitHub Issue
         id: extract_info
         run: |
           issue_title="$(jq -r '.issue.title' < $GITHUB_EVENT_PATH)"
@@ -88,6 +92,14 @@ jobs:
             echo "query=$query" >> $GITHUB_ENV
           fi
 
+      # Check if the script exists before running
+      - name: Check if reddit_bot.py exists
+        run: |
+          if [ ! -f "reddit_bot.py" ]; then
+            echo "reddit_bot.py not found!"
+            exit 1
+          fi
+
       # Run Reddit Bot (Bot replies based on issue info or manual trigger)
       - name: Run Reddit Bot
         env:
@@ -108,10 +120,10 @@ jobs:
             # Check for the !botrun and !botrunn commands in the issue body
             if echo "$issue_body" | grep -q "!botrun("; then
               command=$(echo "$issue_body" | grep -o "!botrun([^)]*)")
-              response=$(python runner.py "$command")
+              response=$(python reddit_bot.py "$command")
             elif echo "$issue_body" | grep -q "!botrunn("; then
               command=$(echo "$issue_body" | grep -o "!botrunn([^)]*)")
-              response=$(python runner.py "$command")
+              response=$(python reddit_bot.py "$command")
             elif [ -n "$post_url" ]; then
               response=$(python reddit_bot.py --manual "$post_url")
             elif [ -n "$query" ]; then
