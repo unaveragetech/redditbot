@@ -61,7 +61,6 @@ jobs:
 
   run-reddit-bot:
     runs-on: ubuntu-latest
-    needs: setup-ollama-and-reddit-bot  # Run after Ollama is installed and started
 
     steps:
       # Extract URL or Query from the GitHub Issue
